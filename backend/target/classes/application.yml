@@ -1,0 +1,96 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: campus-ai-delivery
+  profiles:
+    active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+# ---------------------------------------------------------------------
+# MyBatis-Plus
+# ---------------------------------------------------------------------
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.campus.delivery.modules.*.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    # 生产环境请改为 org.apache.ibatis.logging.nologging.NoLoggingImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      # 主键为 VARCHAR(32)，使用无横线 UUID，与数据库脚本设计一致
+      id-type: assign_uuid
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# ---------------------------------------------------------------------
+# 接口文档（Knife4j）：http://localhost:8080/api/doc.html
+# ---------------------------------------------------------------------
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# ---------------------------------------------------------------------
+# 业务自定义配置
+# ---------------------------------------------------------------------
+campus:
+  # JWT：secret 请通过环境变量 JWT_SECRET 注入，长度不少于 32 字符
+  jwt:
+    secret: ${JWT_SECRET:campus-ai-delivery-dev-secret-key-please-change-in-production}
+    expire-minutes: 720
+    header: Authorization
+    prefix: "Bearer "
+  # 大模型：API Key 只存服务端，禁止下发前端
+  ai:
+    enabled: true
+    provider: openai-compatible
+    api-url: ${LLM_API_URL:https://api.example.com/v1/chat/completions}
+    api-key: ${LLM_API_KEY:}
+    model: ${LLM_MODEL:your-model-name}
+    temperature: 0.7
+    max-tokens: 2048
+    timeout-ms: 15000
+    # 多轮对话上下文保留轮数（滑动窗口）
+    context-rounds: 6
+  # 文件存储：local 本地目录 / oss 对象存储
+  file:
+    storage: local
+    local-path: ./uploads
+    url-prefix: /static
+  # 跨域允许来源（前端开发服务器地址）
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+      - http://127.0.0.1:5173
+
+logging:
+  level:
+    root: info
+    com.campus.delivery: debug

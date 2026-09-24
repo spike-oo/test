@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智能 AI 校园外卖平台 · 架构与分工</title>
+<style>
+  :root{
+    --ink:#1f2329; --muted:#6b7280; --line:#e5e7eb; --bg:#f5f7fb;
+    --c1:#2f6bff; --c2:#00a870; --c3:#8b5cf6; --c4:#f59e0b; --c5:#e5484d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:24px;background:var(--bg);color:var(--ink);
+    font-family:'PingFang SC','Microsoft YaHei',Helvetica,Arial,sans-serif;line-height:1.6}
+  .wrap{max-width:1120px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 6px}
+  h2{font-size:17px;margin:28px 0 12px;padding-left:10px;border-left:4px solid var(--c1)}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:8px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+  /* 分层架构 */
+  .layer{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:8px;margin-bottom:10px;
+    background:#fafbfe;border:1px dashed var(--line)}
+  .layer-name{flex:0 0 108px;font-weight:600;font-size:14px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:13px}
+  .l1 .layer-name{color:var(--c1)} .l2 .layer-name{color:var(--c2)}
+  .l3 .layer-name{color:var(--c3)} .l4 .layer-name{color:var(--c4)}
+  /* 分工表 */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff}
+  th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+  th{background:#f2f5fb;font-weight:600;white-space:nowrap}
+  code{background:#f4f6fa;border-radius:4px;padding:1px 5px;font-size:12.5px;
+    font-family:Consolas,Monaco,monospace}
+  .tag{display:inline-block;border-radius:4px;padding:1px 7px;font-size:12px;color:#fff}
+  .t1{background:var(--c1)} .t2{background:var(--c2)} .t3{background:var(--c3)} .t4{background:var(--c4)}
+  /* 状态机 */
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px}
+  .state{border:1px solid var(--c1);color:var(--c1);border-radius:6px;padding:6px 10px;background:#fff}
+  .state.end{border-color:var(--c2);color:var(--c2)}
+  .state.stop{border-color:var(--c5);color:var(--c5)}
+  .arrow{color:var(--muted)}
+  .note{font-size:12.5px;color:var(--muted);margin-top:8px}
+  /* 目录树 */
+  pre{background:#0f172a;color:#e2e8f0;border-radius:8px;padding:14px;overflow:auto;font-size:12.5px;
+    font-family:Consolas,Monaco,monospace;line-height:1.5}
+  @media (max-width:640px){
+    .layer{flex-direction:column;gap:6px} .layer-name{flex:none}
+    body{padding:12px} th,td{padding:7px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>智能 AI 校园外卖平台 · 架构与四人分工</h1>
+  <div class="sub">第 8 组 · 指导教师：吴贞东 · 对应需求文档《智能AI校园外卖平台需求分析文档 v3》图 2-1 与第 8 章</div>
+
+  <h2>一、系统总体架构（四层）</h2>
+  <div class="card">
+    <div class="layer l1">
+      <div class="layer-name">前端展示层</div>
+      <div class="chips">
+        <span class="chip">学生端 <code>/student</code></span>
+        <span class="chip">商户端 <code>/merchant</code></span>
+        <span class="chip">骑手端 <code>/rider</code></span>
+        <span class="chip">管理员端 <code>/admin</code></span>
+      </div>
+    </div>
+    <div class="layer l2">
+      <div class="layer-name">业务服务层</div>
+      <div class="chips">
+        <span class="chip">用户 / 店铺</span>
+        <span class="chip">菜品 / 订单</span>
+        <span class="chip">骑手 / 配送</span>
+        <span class="chip">评价 / 客服</span>
+        <span class="chip">饮食分析</span>
+      </div>
+    </div>
+    <div class="layer l3">
+      <div class="layer-name">AI 能力层</div>
+      <div class="chips">
+        <span class="chip">语义理解</span>
+        <span class="chip">智能推荐</span>
+        <span class="chip">智能客服</span>
+        <span class="chip">评价分析</span>
+        <span class="chip">经营分析</span>
+      </div>
+    </div>
+    <div class="layer l4">
+      <div class="layer-name">数据存储层</div>
+      <div class="chips">
+        <span class="chip">MySQL 业务数据（35 张表）</span>
+        <span class="chip">Redis 缓存 / 分布式锁</span>
+        <span class="chip">对象存储（图片）</span>
+        <span class="chip">日志与审计</span>
+      </div>
+    </div>
+    <div class="note">技术基线：Spring Boot 3.2 + MyBatis-Plus + MySQL + Redis + WebSocket（后端），Vue 3 + Vite + TypeScript + Element Plus（前端），大模型走 OpenAI 兼容 HTTP 接口。</div>
+  </div>
+
+  <h2>二、四人分工与模块归属</h2>
+  <div class="card" style="padding:0;overflow:auto">
+    <table>
+      <thead>
+        <tr>
+          <th>成员</th><th>端</th><th>业务范围</th>
+          <th>后端包（<code>modules/</code>）</th><th>前端目录</th><th>数据责任域</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag t1">成员1</span></td>
+          <td>学生端</td>
+          <td>首页浏览、语义搜索、AI 点餐、购物车、个人中心与饮食画像</td>
+          <td><code>user</code>（画像/地址）、<code>cart</code>、<code>ai</code>（点餐 / 搜索 / 推荐 / 饮食分析）</td>
+          <td><code>views/student</code></td>
+          <td>用户与画像域（主责）</td>
+        </tr>
+        <tr>
+          <td><span class="tag t2">成员2</span></td>
+          <td>商户端</td>
+          <td>店铺菜品、库存、订单处理、评价管理、AI 经营辅助</td>
+          <td><code>shop</code>、<code>dish</code>、<code>review</code>、<code>ai</code>（评价分析 / 经营分析）</td>
+          <td><code>views/merchant</code></td>
+          <td>商品与经营域（主责）</td>
+        </tr>
+        <tr>
+          <td><span class="tag t3">成员3</span></td>
+          <td>管理员端</td>
+          <td>商户/骑手审核、数据看板、系统配置、知识库、客服工单</td>
+          <td><code>admin</code>、<code>ai</code>（智能客服 / 知识库）</td>
+          <td><code>views/admin</code></td>
+          <td>AI 与运营域（主责）</td>
+        </tr>
+        <tr>
+          <td><span class="tag t4">成员4</span></td>
+          <td>骑手端 + 平台基础</td>
+          <td>登录鉴权、订单状态机、Redis、WebSocket、骑手抢单与配送</td>
+          <td><code>security</code>、<code>order</code>、<code>delivery</code>、<code>websocket</code></td>
+          <td><code>views/rider</code></td>
+          <td>交易与配送域（主责）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">说明：需求文档第 8 章以「成员1—成员4」编号给出分工，姓名待组内确认后替换。</div>
+
+  <h2>三、订单状态机（全系统唯一改状态入口）</h2>
+  <div class="card">
+    <div class="flow">
+      <span class="state">0 待接单</span><span class="arrow">→</span>
+      <span class="state">1 备餐中</span><span class="arrow">→</span>
+      <span class="state">2 待取餐</span><span class="arrow">→</span>
+      <span class="state">3 配送中</span><span class="arrow">→</span>
+      <span class="state end">4 已完成</span>
+    </div>
+    <div class="flow" style="margin-top:10px">
+      <span class="state stop">5 已取消</span>
+      <span class="arrow">（0 待接单 / 2 待取餐 可转入，需回补库存并退款）</span>
+    </div>
+    <div class="flow" style="margin-top:6px">
+      <span class="state stop">6 申诉中</span>
+      <span class="arrow">（由客服工单触发）</span>
+    </div>
+    <div class="note">约束：状态只能经 <code>OrderStateMachine.transit()</code> 变更；各端禁止直接 UPDATE；配 <code>@Version</code> 乐观锁 + <code>order_status_log</code> 追加日志；抢单只绑定 <code>rider_id</code> 不改变状态。</div>
+  </div>
+
+  <h2>四、仓库目录结构</h2>
+  <div class="card">
+<pre>campus-ai-delivery/
+├─ README.md                 项目说明 · 技术栈 · 快速开始 · 分工总表
+├─ docs/                     工程文档
+│   ├─ 01-项目概述与技术架构.md
+│   ├─ 02-四人分工与模块归属.md
+│   ├─ 03-接口规范与协作约定.md
+│   ├─ 04-开发规范与Git协作.md
+│   └─ architecture.html     本页面（架构与分工可视化）
+├─ database/                 MySQL 脚本
+│   ├─ schema.sql            35 张表（DROP + CREATE DATABASE）
+│   ├─ data.sql              演示账号 · 角色权限 · 分类 · 知识库
+│   └─ README.md             初始化步骤 · 表清单 · 设计说明
+├─ backend/                  Spring Boot 3.2 + MyBatis-Plus
+│   ├─ pom.xml
+│   └─ src/main/
+│       ├─ java/com/campus/delivery/
+│       │   ├─ common/       统一响应体 · 异常 · 枚举 · 工具
+│       │   ├─ security/     JWT · 拦截器 · @RequiresRole · UserContext
+│       │   ├─ config/       WebMvc · Redis · MyBatis-Plus · WebSocket · 大模型配置
+│       │   ├─ websocket/    订单实时通知
+│       │   └─ modules/      user · shop · dish · cart · order · delivery
+│       │                    review · ai · admin
+│       └─ resources/
+│           ├─ application.yml / application-dev.yml
+│           └─ prompts/      8 个提示词模板（AI 能力可评审、可迭代）
+└─ frontend/                 Vue 3 + Vite + TypeScript + Element Plus
+    ├─ package.json · vite.config.ts · tsconfig.json
+    └─ src/
+        ├─ api/              按后端模块划分的接口封装
+        ├─ router/           四端路由 + 角色守卫
+        ├─ store/            Pinia（登录态 · 购物车）
+        ├─ utils/            统一请求拦截 · WebSocket 客户端
+        ├─ layouts/          四端布局
+        └─ views/            student · merchant · rider · admin</pre>
+  </div>
+
+  <div class="sub" style="text-align:center;margin-top:20px">
+    本页为静态离线页面，不依赖任何外部资源，可直接在浏览器打开或提交到 GitHub Pages。
+  </div>
+</div>
+</body>
+</html>

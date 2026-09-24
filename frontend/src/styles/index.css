@@ -1,0 +1,40 @@
+:root {
+  --campus-primary: #2f6bff;
+  --campus-bg: #f5f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background: var(--campus-bg);
+  font-family: 'PingFang SC', 'Microsoft YaHei', Helvetica, Arial, sans-serif;
+  color: #1f2329;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 页面通用容器：四端视图统一使用 */
+.page {
+  padding: 16px;
+}
+
+.page-title {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.text-muted {
+  color: #8a8f99;
+  font-size: 13px;
+}

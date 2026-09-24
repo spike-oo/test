@@ -1,0 +1,47 @@
+# =====================================================================
+#  开发环境配置
+#  【注意】本文件会被提交到仓库，请勿在此写入真实密码与密钥。
+#  个人私密配置请写在 application-local.yml（已在 .gitignore 中忽略），
+#  本地启动时使用：mvn spring-boot:run -Dspring-boot.run.profiles=dev,local
+# =====================================================================
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/campus_ai_delivery?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: CampusHikariPool
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      password:
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+          max-wait: 3000ms
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.campus.delivery: debug
+
+# 开发环境启动时把演示账号密码初始化为 123456（见 DevDataInitializer）
+campus:
+  dev:
+    init-demo-password: true
